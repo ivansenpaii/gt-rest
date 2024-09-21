@@ -1,33 +1,9 @@
-# Symfony Project Deployment
+# gt-rest-api
 
 ## Описание
 
 Этот проект представляет собой Symfony приложение, развёрнутое с использованием Docker и Docker Compose. В качестве базы
 данных используется Postgres, а в качестве веб-сервера — Nginx.
-
-## Структура проекта
-
-```
-/app
-|-- /bin
-|   |-- console
-|-- /config
-|-- /public
-|-- /src
-|-- /var
-|-- /vendor
-|-- composer.json
-|-- composer.lock
-|-- symfony.lock
-/docker
-|-- /nginx
-|-- /php
-|   |-- Dockerfile
-|   |-- xdebug.ini
-.gitignore
-docker-compose.yml
-Makefile
-```
 
 ## Инструкция по развёртке
 
