@@ -2,13 +2,45 @@
 
 namespace App\Service;
 
-use App\DTO\Request\CreateDocument as CreateDocumentDto;
+use App\DTO\Request\Document\CreateDocument as CreateDocumentDto;
+use App\Entity\Document as DocumentEntity;
+use App\Repository\DocumentRepository;
+use Doctrine\DBAL\Exception as DoctrineException;
+use Doctrine\ORM\EntityManagerInterface;
 
-class DocumentService
+readonly class DocumentService
 {
+    public function __construct(
+        private DocumentRepository $documentRepository,
+        private EntityManagerInterface $entityManager,
+        private DocumentItemService $documentItemService,
+    ) {
+    }
 
-    public function createDocument(CreateDocumentDto $request): string
+    /**
+     * @throws DoctrineException
+     */
+    public function createDocument(CreateDocumentDto $requestDto): string
     {
-        return $documentId = '123';
+        try {
+            $this->entityManager->getConnection()->beginTransaction();
+
+            $document = (new DocumentEntity())
+                ->setType($requestDto->type);
+
+            $this->documentRepository->save($document);
+            foreach ($requestDto->items as $item) {
+                $this->documentItemService->createDocumentItem($item, $document);
+            }
+
+            $this->entityManager->getConnection()->commit();
+        } catch (DoctrineException $e) {
+            if ($this->entityManager->getConnection()->isTransactionActive()) {
+                $this->entityManager->getConnection()->rollBack();
+            }
+            throw $e;
+        }
+
+        return $document->getId();
     }
 }

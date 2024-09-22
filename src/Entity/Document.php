@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\Enum\Entity\DocumentType;
 use App\Repository\DocumentRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
@@ -10,11 +9,18 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: DocumentRepository::class)]
 class Document
 {
-    #[ORM\Id]
-    #[ORM\Column(type: 'uuid')]
-    private ?string $id = null;
+    public function __construct()
+    {
+        $this->createdAt = new DateTime();
+    }
 
-    #[ORM\Column(type: 'string', length: 50, enumType: DocumentType::class)]
+    #[ORM\Id]
+    #[ORM\Column(name: 'id', type: 'guid')]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
+    private ?string $id;
+
+    #[ORM\Column(type: 'string', length: 50)]
     private string $type;
 
     #[ORM\Column(type: 'datetime')]
@@ -35,21 +41,17 @@ class Document
         return $this->createdAt;
     }
 
-    public function setId(?string $id): Document
-    {
-        $this->id = $id;
-        return $this;
-    }
-
-    public function setType(string $type): Document
+    public function setType(string $type): self
     {
         $this->type = $type;
+
         return $this;
     }
 
-    public function setCreatedAt(DateTime $createdAt): Document
+    public function setCreatedAt(DateTime $createdAt): self
     {
         $this->createdAt = $createdAt;
+
         return $this;
     }
 }

@@ -9,11 +9,13 @@ use Doctrine\ORM\Mapping as ORM;
 class InventoryError
 {
     #[ORM\Id]
-    #[ORM\Column(type: 'uuid')]
-    private ?string $id = null;
+    #[ORM\Column(name: 'id', type: 'guid')]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
+    private ?string $id;
 
     #[ORM\ManyToOne(targetEntity: DocumentItem::class, inversedBy: 'inventoryErrors')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(name: 'document_item_id', nullable: false)]
     private DocumentItem $documentItem;
 
     #[ORM\Column(type: 'integer')]
@@ -25,5 +27,41 @@ class InventoryError
     public function getId(): ?string
     {
         return $this->id;
+    }
+
+    public function getDocumentItem(): DocumentItem
+    {
+        return $this->documentItem;
+    }
+
+    public function getCalculatedStock(): int
+    {
+        return $this->calculatedStock;
+    }
+
+    public function getError(): int
+    {
+        return $this->error;
+    }
+
+    public function setDocumentItem(DocumentItem $documentItem): self
+    {
+        $this->documentItem = $documentItem;
+
+        return $this;
+    }
+
+    public function setCalculatedStock(int $calculatedStock): self
+    {
+        $this->calculatedStock = $calculatedStock;
+
+        return $this;
+    }
+
+    public function setError(int $error): self
+    {
+        $this->error = $error;
+
+        return $this;
     }
 }

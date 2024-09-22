@@ -9,8 +9,10 @@ use Doctrine\ORM\Mapping as ORM;
 class StockMovement
 {
     #[ORM\Id]
-    #[ORM\Column(type: 'uuid')]
-    private ?string $id = null;
+    #[ORM\Column(name: 'id', type: 'guid')]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
+    private ?string $id;
 
     #[ORM\Column(type: 'string')]
     private string $productId;
