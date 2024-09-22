@@ -1,0 +1,7 @@
+controllers:
+    prefix: '/api/v1'
+    name_prefix: 'v_1'
+    resource:
+        path: ../src/Controller/v1/
+        namespace: App\Controller\v1
+    type: attribute
